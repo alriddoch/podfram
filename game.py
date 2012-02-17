@@ -35,7 +35,7 @@ class podflaps:
                 if event.button == 1:
                     self.last_mouse_pos = pygame.mouse.get_pos()
                     self._renderer.add_object(
-                        scene.sphere(self, [uniform(-100000,100000), uniform(-100000,100000), 200000]))
+                        scene.sphere(self, [uniform(-1000000,1000000), uniform(-400000,400000), 200000], 10000))
                     print pygame.mouse.get_pos()
                     # pygame.mouse.set_visible(False)
             if event.type == MOUSEBUTTONUP:
@@ -65,7 +65,7 @@ class podflaps:
       self._renderer.add_object(scene.explosion(self, d))
     self.detonations = []
   def run(self):
-    self._renderer.add_object(scene.sphere(self, [0,0,0]))
+    self._renderer.add_object(scene.sphere(self, [0,0,0], 10000))
     self._renderer.add_hud(hud.backdrop("worldmap.jpg"))
     while self.running:
       self.handle_events(pygame.event.get())

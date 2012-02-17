@@ -7,21 +7,21 @@ from OpenGL.GLU import *
 import ode
 
 class sphere:
-  def __init__(self, game, pos):
+  def __init__(self, game, pos, radius):
     self.display_list = glGenLists(1)
     glNewList(self.display_list, GL_COMPILE)
     quadric = gluNewQuadric()
     gluQuadricNormals(quadric, GLU_SMOOTH)
     gluQuadricDrawStyle(quadric, GLU_FILL)
-    gluSphere(quadric, 100000, 16, 16)
+    gluSphere(quadric, radius, 16, 16)
     glEndList()
 
     self.body = ode.Body(game.world)
     self.body.setGravityMode(True)
     self.body.setPosition(pos)
     self.mass = ode.Mass()
-    self.mass.setSphere(1000, 100000)
-    self.geom = ode.GeomSphere(game.space,100000)
+    self.mass.setSphere(1000, radius)
+    self.geom = ode.GeomSphere(game.space,radius)
     self.geom.setBody(self.body)
   def draw(self):
     glColor3f(0,1,0)
