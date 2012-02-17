@@ -13,7 +13,7 @@ class podflaps:
     self.running = True
     self.clock = pygame.time.Clock()
     self.world = ode.World()
-    self.world.setGravity((0,0,-9810))
+    self.world.setGravity((0,0,-98100))
     self.world.setERP(0.8)
     self.world.setCFM(1E-5)
     self.space = ode.Space()
