@@ -65,8 +65,9 @@ class renderer:
     glClear(GL_DEPTH_BUFFER_BIT)
     self.world_projection()
     self.move_camera()
-    glColor3f(0,1,0)
     for o in self.objects:
       o.draw()
+      if o.obsolete():
+        self.objects.remove(o)
     pygame.display.flip()
     glFinish()

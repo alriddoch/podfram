@@ -63,6 +63,7 @@ class podflaps:
     self.contact_group.empty()
     for d in self.detonations:
       self._renderer.add_object(scene.explosion(self, d))
+    self.detonations = []
   def run(self):
     self._renderer.add_object(scene.sphere(self, [0,0,0]))
     self._renderer.add_hud(hud.backdrop("worldmap.jpg"))
