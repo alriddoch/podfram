@@ -12,6 +12,5 @@ def main():
   app.run()
 
 if __name__ == "__main__":
-  print "Hit ESC key to quit."
   main()
 
