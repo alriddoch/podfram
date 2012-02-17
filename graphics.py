@@ -8,7 +8,7 @@ class renderer:
   def __init__(self, game):
     self.clear_color = (.1,.0,.1,.1)
     self.size = (640, 360)
-    self.perspective = (90, float(self.size[0])/self.size[1], .1,100)
+    self.perspective = (50, float(self.size[0])/self.size[1], .1,100)
 
     self.clock = pygame.time.Clock()
     self.objects = []
@@ -39,7 +39,7 @@ class renderer:
   def move_camera(self):
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
-    glTranslated(0, 0, -5)
+    glTranslated(0, 0, -10)
   def add_object(self, o):
     self.objects.append(o)
   def update(self):

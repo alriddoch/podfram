@@ -1,6 +1,7 @@
 import ode
 from pygame.locals import *
 import pygame
+from random import uniform
 
 import scene
 
@@ -16,7 +17,11 @@ class podflaps:
     self.world.setCFM(1E-5)
     self.space = ode.Space()
     self.contact_group = ode.JointGroup()
-    self.floor = ode.GeomPlane(self.space, (0,1,0), -3)
+    self.floor = ode.GeomPlane(self.space, (0,1,0), -5)
+    self.walls = [ode.GeomPlane(self.space, (1,0,0), -5),
+                  ode.GeomPlane(self.space, (-1,0,0), -5),
+                  ode.GeomPlane(self.space, (0,0,1), -5),
+                  ode.GeomPlane(self.space, (0,0,-1), -5)]
   def add_renderer(self, r):
     self._renderer = r
   def handle_events(self, events):
@@ -26,6 +31,8 @@ class podflaps:
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
                     self.last_mouse_pos = pygame.mouse.get_pos()
+                    self._renderer.add_object(
+                        scene.sphere(self, [uniform(-1,1), 2, uniform(-1,1)]))
                     # pygame.mouse.set_visible(False)
             if event.type == MOUSEBUTTONUP:
                 if event.button == 1:
@@ -36,8 +43,9 @@ class podflaps:
   def handle_keys(self, keys): pass
   def collide(self, args, geom1, geom2):
     contacts = ode.collide(geom1, geom2)
+    # print type(geom1), type(geom2)
     for c in contacts:
-      c.setBounce(1)
+      c.setBounce(0.9)
       c.setMu(5000)
       j = ode.ContactJoint(self.world, self.contact_group, c)
       j.attach(geom1.getBody(), geom2.getBody())
@@ -47,7 +55,7 @@ class podflaps:
     self.world.step(1/60.)
     self.contact_group.empty()
   def run(self):
-    self._renderer.add_object(scene.sphere(self))
+    self._renderer.add_object(scene.sphere(self, [0,0,0]))
     while self.running:
       self.handle_events(pygame.event.get())
       self.handle_keys(pygame.key.get_pressed())
