@@ -4,8 +4,6 @@ from OpenGL.GLU import *
 import pygame
 from pygame.locals import *
 
-import scene
-
 class renderer:
   def __init__(self, game):
     self.clear_color = (.1,.0,.1,.1)
@@ -34,8 +32,6 @@ class renderer:
     glLightfv(GL_LIGHT0, GL_AMBIENT, [0,0,0,1])
     glLightfv(GL_LIGHT0, GL_DIFFUSE, [0.5,0.5,0.5,1])
     glLightfv(GL_LIGHT0, GL_SPECULAR, [0.5,0.5,0.5,1])
-
-    # self.sphere = scene.sphere(game)
 
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
