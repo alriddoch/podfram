@@ -1,7 +1,10 @@
 from OpenGL.GL import *
+import pygame
+from pygame.locals import *
 
 class renderer:
   def __init__(self):
+    pygame.display.set_mode((640,480), OPENGL|DOUBLEBUF|HWSURFACE)
     glViewport(0,0,640,480)
     # self.move_camera()
     glClearColor(*self.clear_color)
@@ -15,4 +18,8 @@ class renderer:
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
     glEnable(GL_POLYGON_SMOOTH)
     glEnable(GL_BLEND)
-
+  def update(self):
+    # clear screen
+    # lists?
+    # update_screen
+    glFinish()
