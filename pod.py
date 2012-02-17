@@ -8,7 +8,7 @@ import io
 
 def main():
   app = game.podflaps()
-  app.add_renderer(graphics.renderer())
+  app.add_renderer(graphics.renderer(app))
   app.run()
 
 if __name__ == "__main__":

@@ -1,13 +1,18 @@
 from OpenGL.GL import *
 from OpenGL.GLU import *
+
 import pygame
 from pygame.locals import *
 
+import scene
+
 class renderer:
-  def __init__(self):
+  def __init__(self, game):
     self.clear_color = (.1,.0,.1,.1)
     self.size = (640, 360)
     self.perspective = (90, float(self.size[0])/self.size[1], .1,100)
+
+    self.clock = pygame.time.Clock()
 
     pygame.display.set_mode(self.size, OPENGL|DOUBLEBUF|HWSURFACE)
     glViewport(0,0,self.size[0], self.size[1])
@@ -23,6 +28,14 @@ class renderer:
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
     glEnable(GL_POLYGON_SMOOTH)
     glEnable(GL_BLEND)
+    glEnable(GL_LIGHT0)
+    glLightfv(GL_LIGHT0, GL_POSITION, [10,10,10,1])
+    glLightfv(GL_LIGHT0, GL_AMBIENT, [0,0,0,1])
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, [0.5,0.5,0.5,1])
+    glLightfv(GL_LIGHT0, GL_SPECULAR, [0.5,0.5,0.5,1])
+
+    self.sphere = scene.sphere(game)
+
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
     gluPerspective(*self.perspective)
@@ -34,12 +47,7 @@ class renderer:
     glClear(GL_DEPTH_BUFFER_BIT|GL_COLOR_BUFFER_BIT)
     self.move_camera()
     glColor3f(0,1,0)
-    glBegin(GL_QUADS)
-    glNormal3d(0,1,0)
-    glVertex3f(0,0,0)
-    glVertex3f(1,0,0)
-    glVertex3f(1,1,0)
-    glVertex3f(0,1,0)
-    glEnd()
+    print self.sphere.get_position()
+    self.sphere.draw()
     pygame.display.flip()
     glFinish()
