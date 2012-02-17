@@ -34,10 +34,13 @@ class podflaps:
   def handle_keys(self, keys): pass
   def collide(self, args, geom1, geom2):
     print "collide ", args, geom1, geom2
-    body = geom1.getBody()
-    vel = body.getLinearVel()
-    if vel[1] < 0:
-      body.setLinearVel((vel[0], -vel[1], vel[2]))
+
+    contacts = ode.collide(geom1, geom2)
+    for c in contacts:
+      c.setBounce(1)
+      c.setMu(5000)
+      j = ode.ContactJoint(self.world, self.contact_group, c)
+      j.attach(geom1.getBody(), geom2.getBody())
     
   def handle_world(self):
     self.space.collide((self.world,self.contact_group), self.collide)
