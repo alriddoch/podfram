@@ -5,7 +5,7 @@ from pygame.locals import *
 
 class renderer:
   def __init__(self):
-    self.clear_color = (1.,0.,1.,1.)
+    self.clear_color = (.1,.0,.1,.1)
     self.size = (640, 360)
     self.perspective = (90, float(self.size[0])/self.size[1], .1,100)
 
@@ -15,7 +15,7 @@ class renderer:
     glClearColor(*self.clear_color)
     glEnable(GL_DEPTH_TEST)
     glShadeModel(GL_SMOOTH)
-    # glEnable(GL_LIGHTING)
+    glEnable(GL_LIGHTING)
     glEnable(GL_COLOR_MATERIAL)
     glEnable(GL_NORMALIZE)
     glMaterial(GL_FRONT, GL_AMBIENT, (.1,.1,.1,1))
@@ -33,7 +33,7 @@ class renderer:
   def update(self):
     glClear(GL_DEPTH_BUFFER_BIT|GL_COLOR_BUFFER_BIT)
     self.move_camera()
-    glColor3f(.0,.1,.0)
+    glColor3f(0,1,0)
     glBegin(GL_QUADS)
     glNormal3d(0,1,0)
     glVertex3f(0,0,0)
