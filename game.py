@@ -2,6 +2,8 @@ import ode
 from pygame.locals import *
 import pygame
 
+import scene
+
 class podflaps:
   def __init__(self):
     pygame.init()
@@ -33,8 +35,6 @@ class podflaps:
                 # if self.last_mouse_pos is not None: self.handle_mouse()
   def handle_keys(self, keys): pass
   def collide(self, args, geom1, geom2):
-    print "collide ", args, geom1, geom2
-
     contacts = ode.collide(geom1, geom2)
     for c in contacts:
       c.setBounce(1)
@@ -47,6 +47,7 @@ class podflaps:
     self.world.step(1/60.)
     self.contact_group.empty()
   def run(self):
+    self._renderer.add_object(scene.sphere(self))
     while self.running:
       self.handle_events(pygame.event.get())
       self.handle_keys(pygame.key.get_pressed())

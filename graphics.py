@@ -13,6 +13,7 @@ class renderer:
     self.perspective = (90, float(self.size[0])/self.size[1], .1,100)
 
     self.clock = pygame.time.Clock()
+    self.objects = []
 
     pygame.display.set_mode(self.size, OPENGL|DOUBLEBUF|HWSURFACE)
     glViewport(0,0,self.size[0], self.size[1])
@@ -34,7 +35,7 @@ class renderer:
     glLightfv(GL_LIGHT0, GL_DIFFUSE, [0.5,0.5,0.5,1])
     glLightfv(GL_LIGHT0, GL_SPECULAR, [0.5,0.5,0.5,1])
 
-    self.sphere = scene.sphere(game)
+    # self.sphere = scene.sphere(game)
 
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
@@ -43,11 +44,13 @@ class renderer:
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
     glTranslated(0, 0, -5)
+  def add_object(self, o):
+    self.objects.append(o)
   def update(self):
     glClear(GL_DEPTH_BUFFER_BIT|GL_COLOR_BUFFER_BIT)
     self.move_camera()
     glColor3f(0,1,0)
-    print self.sphere.get_position()
-    self.sphere.draw()
+    for o in self.objects:
+      o.draw()
     pygame.display.flip()
     glFinish()
