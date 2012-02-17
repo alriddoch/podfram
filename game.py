@@ -3,6 +3,7 @@ from pygame.locals import *
 import pygame
 from random import uniform
 
+import hud
 import scene
 
 class podflaps:
@@ -12,16 +13,18 @@ class podflaps:
     self.running = True
     self.clock = pygame.time.Clock()
     self.world = ode.World()
-    self.world.setGravity((0,-9.81,0))
+    self.world.setGravity((0,0,-9810))
     self.world.setERP(0.8)
     self.world.setCFM(1E-5)
     self.space = ode.Space()
     self.contact_group = ode.JointGroup()
-    self.floor = ode.GeomPlane(self.space, (0,1,0), -5)
-    self.walls = [ode.GeomPlane(self.space, (1,0,0), -5),
-                  ode.GeomPlane(self.space, (-1,0,0), -5),
-                  ode.GeomPlane(self.space, (0,0,1), -5),
-                  ode.GeomPlane(self.space, (0,0,-1), -5)]
+    self.floor = ode.GeomPlane(self.space, (0,0,1), -500000)
+    #self.walls = [ode.GeomPlane(self.space, (1,0,0), -500000),
+                  #ode.GeomPlane(self.space, (-1,0,0), -500000),
+                  #ode.GeomPlane(self.space, (0,1,0), -500000),
+                  #ode.GeomPlane(self.space, (0,-1,0), -500000)]
+
+    self.detonations = []
   def add_renderer(self, r):
     self._renderer = r
   def handle_events(self, events):
@@ -32,7 +35,8 @@ class podflaps:
                 if event.button == 1:
                     self.last_mouse_pos = pygame.mouse.get_pos()
                     self._renderer.add_object(
-                        scene.sphere(self, [uniform(-1,1), 2, uniform(-1,1)]))
+                        scene.sphere(self, [uniform(-100000,100000), uniform(-100000,100000), 200000]))
+                    print pygame.mouse.get_pos()
                     # pygame.mouse.set_visible(False)
             if event.type == MOUSEBUTTONUP:
                 if event.button == 1:
@@ -44,6 +48,9 @@ class podflaps:
   def collide(self, args, geom1, geom2):
     contacts = ode.collide(geom1, geom2)
     # print type(geom1), type(geom2)
+    if type(geom2) == ode.GeomPlane and type(geom1) == ode.GeomSphere:
+      print "BOOOM"
+      self.detonations.append(geom1.getBody().getPosition())
     for c in contacts:
       c.setBounce(0.9)
       c.setMu(5000)
@@ -54,8 +61,11 @@ class podflaps:
     self.space.collide((self.world,self.contact_group), self.collide)
     self.world.step(1/60.)
     self.contact_group.empty()
+    for d in self.detonations:
+      self._renderer.add_object(scene.explosion(self, d))
   def run(self):
     self._renderer.add_object(scene.sphere(self, [0,0,0]))
+    self._renderer.add_hud(hud.backdrop("worldmap.jpg"))
     while self.running:
       self.handle_events(pygame.event.get())
       self.handle_keys(pygame.key.get_pressed())
