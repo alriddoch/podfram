@@ -69,7 +69,7 @@ class podflaps:
   def run(self):
     #self._renderer.add_object(scene.sphere(self, [0,0,0], 10000))
     self._renderer.add_object(scene.floor(self, 25, 15))
-    self._renderer.add_drop(hud.backdrop("worldmap.jpg"))
+    self._renderer.add_drop(hud.backdrop("worldphoto.jpg"))
     while self.running:
       self.handle_events(pygame.event.get())
       self.handle_keys(pygame.key.get_pressed())
