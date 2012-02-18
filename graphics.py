@@ -19,7 +19,6 @@ class renderer:
 
     pygame.display.set_mode(self.size, OPENGL|DOUBLEBUF|HWSURFACE)
     glViewport(0,0,self.size[0], self.size[1])
-    # self.move_camera()
     glClearColor(*self.clear_color)
     glShadeModel(GL_SMOOTH)
     glEnable(GL_COLOR_MATERIAL)
@@ -65,22 +64,28 @@ class renderer:
     "Add an object to the backdrop scene"
     self.drops.append(o)
   def add_pre_object(self, o):
+    """Add an object to those rendered invisibly before the world
+
+    This is mostly to allow depth writes to stencil or oclude objects during
+    the world render phase"""
     self.pre_objects.append(o)
   def add_object(self, o):
+    "Add an object to the world"
     self.objects.append(o)
   def remove_object_by_geom(self, geom):
+    "Remove the object with owns the given geometry from the world"
     for o in self.objects:
       if hasattr(o, 'geom') and o.geom == geom:
         print "Found it"
         self.objects.remove(o)
   def click(self, pos):
+    "Determine the world coords at a given click position"
     self.world_projection(self.perspective)
     self.move_camera()
 
     viewport = glGetIntegerv(GL_VIEWPORT)
     mvmatrix = glGetDoublev(GL_MODELVIEW_MATRIX)
     projmatrix = glGetDoublev(GL_PROJECTION_MATRIX)
-    print (pos[0], self.size[1]-pos[1], 0.2)
     return gluUnProject(pos[0],
                         self.size[1] - pos[1],
                         0.4,
@@ -88,8 +93,10 @@ class renderer:
                         projmatrix,
                         viewport)
   def set_camera_focus(self, pos):
+    "Set the position the camera is looking at"
     self.camera_focus = pos
   def update(self):
+    "Update the screen, with backdrop, 3D world and a hud"
     glClear(GL_DEPTH_BUFFER_BIT)
 
     # Draw the background

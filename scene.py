@@ -8,6 +8,7 @@ import ode
 import random
 
 class floor:
+  "A class that uses a physcical box to model a floor of limted size"
   def __init__(self, game, width, height):
     self.display_list = glGenLists(1)
     glNewList(self.display_list, GL_COMPILE)
@@ -35,18 +36,8 @@ class floor:
   def obsolete(self):
     return False
 
-class cuboid:
-  def __init__(self, game):
-    self.display_list = glGenLists(1)
-    glNewList(self.display_list, GL_COMPILE)
-    glColor3f(.0,.0,.5)
-    glBegin(GL_QUADS)
-    glNormal3d(0,1,0)
-    glVertex3f()
-  def obsolete(self):
-    return False
-
 class sphere:
+  "A physical sphere, acting under gravity"
   def __init__(self, game, pos, radius):
     self.display_list = glGenLists(1)
     glNewList(self.display_list, GL_COMPILE)
@@ -76,6 +67,7 @@ class sphere:
     return False
 
 class avatar:
+  "A class the represents a cylindricall pseudo-humanoid avatar"
   def __init__(self, game, pos, radius):
     self.display_list = glGenLists(1)
     glNewList(self.display_list, GL_COMPILE)
@@ -106,6 +98,7 @@ class avatar:
     return False
 
 class portal:
+  "An obsolete class for punching holes in other things"
   def __init__(self, game, pos, radius):
     self.display_list = glGenLists(1)
     glNewList(self.display_list, GL_COMPILE)
@@ -139,6 +132,7 @@ class portal:
     return False
 
 class explosion:
+  "An obsolete class which renders an expanding sphere to model a large bomb"
   def __init__(self, game, pos):
     self.display_list = glGenLists(1)
     glNewList(self.display_list, GL_COMPILE)
@@ -165,6 +159,7 @@ class explosion:
     return self.size > 200
 
 class voxel:
+  "This physics compenent of a voxel field"
   def __init__(self, game, pos):
     print pos
     self.body = ode.Body(game.world)
@@ -175,6 +170,7 @@ class voxel:
     self.geom.setBody(self.body)
 
 class voxels:
+  "A 3D vosel field"
   def __init__(self, game):
     self.display_list = glGenLists(1)
     glNewList(self.display_list, GL_COMPILE)
@@ -227,6 +223,7 @@ class voxels:
         z = random.randint(-2, 2)
         self.add_voxel(x, y, z, 1)
   def add_voxel(self, x, y, z, val):
+    "Add a vocel to the field"
     if not self.voxels.has_key(x):
       self.voxels[x] = {}
     row = self.voxels[x]
