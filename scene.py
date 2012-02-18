@@ -110,7 +110,7 @@ class portal:
     quadric = gluNewQuadric()
     gluQuadricNormals(quadric, GLU_SMOOTH)
     gluQuadricDrawStyle(quadric, GLU_FILL)
-    gluSphere(quadric, radius, 16, 16)
+    gluSphere(quadric, radius+1, 16, 16)
     glEndList()
 
     self.body = ode.Body(game.world)

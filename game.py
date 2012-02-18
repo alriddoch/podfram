@@ -63,6 +63,17 @@ class podflaps:
       if body.kind == scene.sphere:
         print "BOOOM"
         self.detonations.append((other, body.getPosition()))
+  def detect_death(self, one, two):
+    body_one = one.getBody()
+    body_two = two.getBody()
+    if body_one is None or body_two is None:
+      return
+    if not hasattr(body_one, 'kind') or not hasattr(body_two, 'kind'):
+      return
+    if body_one.kind == scene.avatar and body_two.kind == scene.portal or \
+       body_two.kind == scene.avatar and body_one.kind == scene.portal:
+      print "ARRRG"
+      self.character.geom.disable()
 
   def collide(self, args, geom1, geom2):
     contacts = ode.collide(geom1, geom2)
@@ -71,6 +82,8 @@ class podflaps:
       self.detect_interaction(geom1, geom2)
     elif type(geom2) == ode.GeomBox:
       self.detect_interaction(geom2, geom1)
+    else:
+      self.detect_death(geom1, geom2)
     for c in contacts:
       c.setBounce(0.2)
       c.setMu(5000)
@@ -84,7 +97,7 @@ class podflaps:
     for d in self.detonations:
       geom = d[0]
       pos = d[1]
-      self._renderer.add_pre_object(scene.portal(self, (pos[0], pos[1], 0), 2))
+      self._renderer.add_pre_object(scene.portal(self, (pos[0], pos[1], 0), 1))
       self.space.remove(geom)
       self._renderer.remove_object_by_geom(geom)
     self.detonations = []
