@@ -31,3 +31,13 @@ class backdrop:
     glTexCoord2d(1,0); glVertex3f(r.size[0],0,0)
     glEnd()
     glDisable(GL_TEXTURE_2D)
+
+class sky:
+  def draw(self, r):
+    glBegin(GL_QUADS)
+    glColor3f(0.7,1,1)
+    glVertex3f(0,0,0)
+    glVertex3f(0,r.size[1],0)
+    glVertex3f(r.size[0],r.size[1],0)
+    glVertex3f(r.size[0],0,0)
+    glEnd()

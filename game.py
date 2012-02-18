@@ -35,13 +35,15 @@ class podflaps:
             if event.type == KEYDOWN:
                 if event.key == K_UP:
                   print "1"
-                  self.character.body.setForce((0,100000,0))
+                  self.character.body.setForce((0,10000,0))
                 if event.key == K_DOWN:
-                  self.character.body.setForce((0,-100000,0))
+                  self.character.body.setForce((0,-10000,0))
                 if event.key == K_LEFT:
-                  self.character.body.setForce((-100000,0,0))
+                  self.character.body.setForce((-10000,0,0))
                 if event.key == K_RIGHT:
-                  self.character.body.setForce((100000,0,0))
+                  self.character.body.setForce((10000,0,0))
+                if event.key == K_SPACE:
+                  self.character.body.setForce((0,0,50000))
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
                     print pygame.mouse.get_pos()
@@ -103,15 +105,17 @@ class podflaps:
     self.detonations = []
   def run(self):
     #self._renderer.add_object(scene.sphere(self, [0,0,0], 10000))
-    self._renderer.add_object(scene.floor(self, 25, 15))
-    self._renderer.add_drop(hud.backdrop("worldphoto.jpg"))
+    #self._renderer.add_object(scene.floor(self, 25, 15))
+    self._renderer.add_object(scene.voxels(self))
+    self._renderer.add_drop(hud.sky())
 
-    self.character = scene.avatar(self, (0, 0, 5), 1)
+    self.character = scene.avatar(self, (0, 0, 5), 0.3)
     self._renderer.add_object(self.character)
     while self.running:
       self.handle_events(pygame.event.get())
       self.handle_keys(pygame.key.get_pressed())
       self.handle_world()
       self.clock.tick()
+      self._renderer.set_camera_focus(self.character.body.getPosition())
       self._renderer.update()
     print self.clock.get_fps()

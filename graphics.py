@@ -8,7 +8,8 @@ class renderer:
   def __init__(self, game):
     self.clear_color = (.1,.0,.1,.1)
     self.size = (640, 360)
-    self.perspective = (50, float(self.size[0])/self.size[1], 20,100)
+    self.perspective = (50, float(self.size[0])/self.size[1], 1,100)
+    self.camera_focus = (0, -0, 0)
 
     self.clock = pygame.time.Clock()
     self.drops = []
@@ -55,8 +56,11 @@ class renderer:
     "Set up the camera"
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
-    glTranslated(0, 0, -40)
-    glRotate(-20, 1, 0, 0)
+    glTranslated(0, 0, -4)
+    glRotate(-90, 1, 0, 0)
+    glTranslated(-self.camera_focus[0],
+                 -self.camera_focus[1],
+                 -self.camera_focus[2])
   def add_drop(self, o):
     "Add an object to the backdrop scene"
     self.drops.append(o)
@@ -83,6 +87,8 @@ class renderer:
                         mvmatrix,
                         projmatrix,
                         viewport)
+  def set_camera_focus(self, pos):
+    self.camera_focus = pos
   def update(self):
     glClear(GL_DEPTH_BUFFER_BIT)
 
