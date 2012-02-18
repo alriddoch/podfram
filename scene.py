@@ -52,6 +52,7 @@ class sphere:
     quadric = gluNewQuadric()
     gluQuadricNormals(quadric, GLU_SMOOTH)
     gluQuadricDrawStyle(quadric, GLU_FILL)
+    glColor3f(1,0,0)
     gluSphere(quadric, radius, 16, 16)
     glEndList()
 
@@ -65,7 +66,6 @@ class sphere:
     self.geom = ode.GeomSphere(game.space,radius)
     self.geom.setBody(self.body)
   def draw(self):
-    glColor3f(0,1,0)
     glPushMatrix()
     pos = self.body.getPosition()
     glTranslated(pos[0], pos[1], pos[2])
@@ -81,6 +81,7 @@ class avatar:
     quadric = gluNewQuadric()
     gluQuadricNormals(quadric, GLU_SMOOTH)
     gluQuadricDrawStyle(quadric, GLU_FILL)
+    glColor3f(0,0,1)
     gluSphere(quadric, radius, 16, 16)
     glEndList()
 
@@ -94,7 +95,6 @@ class avatar:
     self.geom = ode.GeomSphere(game.space,radius)
     self.geom.setBody(self.body)
   def draw(self):
-    glColor3f(0,0,1)
     glPushMatrix()
     pos = self.body.getPosition()
     glTranslated(pos[0], pos[1], pos[2])
