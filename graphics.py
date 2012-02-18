@@ -8,10 +8,11 @@ class renderer:
   def __init__(self, game):
     self.clear_color = (.1,.0,.1,.1)
     self.size = (640, 360)
-    self.perspective = (50, float(self.size[0])/self.size[1], 100,10000000)
+    self.perspective = (50, float(self.size[0])/self.size[1], 1,100)
 
     self.clock = pygame.time.Clock()
     self.drops = []
+    self.pre_objects = []
     self.objects = []
     self.huds = []
 
@@ -54,7 +55,8 @@ class renderer:
     "Set up the camera"
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
-    glTranslated(0, 0, -1000000)
+    glTranslated(0, 0, -40)
+    glRotate(-20, 1, 0, 0)
   def add_drop(self, o):
     "Add an object to the backdrop scene"
     self.drops.append(o)
@@ -62,20 +64,30 @@ class renderer:
     self.objects.append(o)
   def update(self):
     glClear(GL_COLOR_BUFFER_BIT)
-    for o in self.objects:
-      o.draw()
+
+    # Draw the background
     self.hud_projection()
     for h in self.drops:
       h.draw(self)
+
     glClear(GL_DEPTH_BUFFER_BIT)
+    # Draw the world
     self.world_projection(self.perspective)
     self.move_camera()
+    for o in self.pre_objects:
+      o.draw()
+      if o.obsolete():
+        self.objects.remove(o)
     for o in self.objects:
       o.draw()
       if o.obsolete():
         self.objects.remove(o)
+
+    # Draw the heads up
     self.hud_projection()
     for h in self.huds:
       h.draw(self)
+
+    # and finish
     pygame.display.flip()
     glFinish()

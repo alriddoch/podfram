@@ -7,18 +7,19 @@ import hud
 import scene
 
 class podflaps:
+  _GRAVITY = 9.81
   def __init__(self):
     pygame.init()
 
     self.running = True
     self.clock = pygame.time.Clock()
     self.world = ode.World()
-    self.world.setGravity((0,0,-98100))
+    self.world.setGravity((0,0,-self._GRAVITY))
     self.world.setERP(0.8)
     self.world.setCFM(1E-5)
     self.space = ode.Space()
     self.contact_group = ode.JointGroup()
-    self.floor = ode.GeomPlane(self.space, (0,0,1), -500000)
+    #self.floor = ode.GeomPlane(self.space, (0,0,1), -50)
     #self.walls = [ode.GeomPlane(self.space, (1,0,0), -500000),
                   #ode.GeomPlane(self.space, (-1,0,0), -500000),
                   #ode.GeomPlane(self.space, (0,1,0), -500000),
@@ -33,9 +34,10 @@ class podflaps:
                 self.running = False
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    self.last_mouse_pos = pygame.mouse.get_pos()
                     self._renderer.add_object(
-                        scene.sphere(self, [uniform(-1000000,1000000), uniform(-400000,400000), 200000], 10000))
+                        scene.sphere(self, [uniform(-25,25),
+                                            uniform(-15,15),
+                                            20], 1))
                     print pygame.mouse.get_pos()
                     # pygame.mouse.set_visible(False)
             if event.type == MOUSEBUTTONUP:
@@ -65,7 +67,8 @@ class podflaps:
       self._renderer.add_object(scene.explosion(self, d))
     self.detonations = []
   def run(self):
-    self._renderer.add_object(scene.sphere(self, [0,0,0], 10000))
+    #self._renderer.add_object(scene.sphere(self, [0,0,0], 10000))
+    self._renderer.add_object(scene.floor(self, 25, 15))
     self._renderer.add_drop(hud.backdrop("worldmap.jpg"))
     while self.running:
       self.handle_events(pygame.event.get())
