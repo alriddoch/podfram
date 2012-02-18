@@ -66,7 +66,7 @@ class podflaps:
     self.detonations = []
   def run(self):
     self._renderer.add_object(scene.sphere(self, [0,0,0], 10000))
-    self._renderer.add_hud(hud.backdrop("worldmap.jpg"))
+    self._renderer.add_drop(hud.backdrop("worldmap.jpg"))
     while self.running:
       self.handle_events(pygame.event.get())
       self.handle_keys(pygame.key.get_pressed())
