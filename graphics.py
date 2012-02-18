@@ -8,7 +8,7 @@ class renderer:
   def __init__(self, game):
     self.clear_color = (.1,.0,.1,.1)
     self.size = (640, 360)
-    self.perspective = (50, float(self.size[0])/self.size[1], 1,100)
+    self.perspective = (50, float(self.size[0])/self.size[1], 20,100)
 
     self.clock = pygame.time.Clock()
     self.drops = []
@@ -60,24 +60,49 @@ class renderer:
   def add_drop(self, o):
     "Add an object to the backdrop scene"
     self.drops.append(o)
+  def add_pre_object(self, o):
+    self.pre_objects.append(o)
   def add_object(self, o):
     self.objects.append(o)
+  def remove_object_by_geom(self, geom):
+    for o in self.objects:
+      if hasattr(o, 'geom') and o.geom == geom:
+        print "Found it"
+        self.objects.remove(o)
+  def click(self, pos):
+    self.world_projection(self.perspective)
+    self.move_camera()
+
+    viewport = glGetIntegerv(GL_VIEWPORT)
+    mvmatrix = glGetDoublev(GL_MODELVIEW_MATRIX)
+    projmatrix = glGetDoublev(GL_PROJECTION_MATRIX)
+    print (pos[0], self.size[1]-pos[1], 0.2)
+    return gluUnProject(pos[0],
+                        self.size[1] - pos[1],
+                        0.4,
+                        mvmatrix,
+                        projmatrix,
+                        viewport)
   def update(self):
-    glClear(GL_COLOR_BUFFER_BIT)
+    glClear(GL_DEPTH_BUFFER_BIT)
 
     # Draw the background
+    glDepthMask(False)
     self.hud_projection()
     for h in self.drops:
       h.draw(self)
 
-    glClear(GL_DEPTH_BUFFER_BIT)
     # Draw the world
     self.world_projection(self.perspective)
     self.move_camera()
+
+    glDepthMask(True)
+    glColorMask(False, False, False, False)
     for o in self.pre_objects:
       o.draw()
       if o.obsolete():
-        self.objects.remove(o)
+        self.pre_objects.remove(o)
+    glColorMask(True, True, True, True)
     for o in self.objects:
       o.draw()
       if o.obsolete():

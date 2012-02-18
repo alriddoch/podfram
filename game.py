@@ -32,13 +32,23 @@ class podflaps:
         for event in events:
             if event.type == QUIT:
                 self.running = False
+            if event.type == KEYDOWN:
+                if event.key == K_UP:
+                  print "1"
+                  self.character.body.setForce((0,100000,0))
+                if event.key == K_DOWN:
+                  self.character.body.setForce((0,-100000,0))
+                if event.key == K_LEFT:
+                  self.character.body.setForce((-100000,0,0))
+                if event.key == K_RIGHT:
+                  self.character.body.setForce((100000,0,0))
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    self._renderer.add_object(
-                        scene.sphere(self, [uniform(-25,25),
-                                            uniform(-15,15),
-                                            20], 1))
                     print pygame.mouse.get_pos()
+                    pos = self._renderer.click(pygame.mouse.get_pos())
+                    print pos
+                    self._renderer.add_object(
+                        scene.sphere(self, pos, 2))
                     # pygame.mouse.set_visible(False)
             if event.type == MOUSEBUTTONUP:
                 if event.button == 1:
@@ -47,14 +57,22 @@ class podflaps:
             if event.type == MOUSEMOTION: pass
                 # if self.last_mouse_pos is not None: self.handle_mouse()
   def handle_keys(self, keys): pass
+  def detect_interaction(self, platform, other):
+    body = other.getBody()
+    if body is not None and hasattr(body, 'kind'):
+      if body.kind == scene.sphere:
+        print "BOOOM"
+        self.detonations.append((other, body.getPosition()))
+
   def collide(self, args, geom1, geom2):
     contacts = ode.collide(geom1, geom2)
     # print type(geom1), type(geom2)
-    if type(geom2) == ode.GeomPlane and type(geom1) == ode.GeomSphere:
-      print "BOOOM"
-      self.detonations.append(geom1.getBody().getPosition())
+    if type(geom1) == ode.GeomBox:
+      self.detect_interaction(geom1, geom2)
+    elif type(geom2) == ode.GeomBox:
+      self.detect_interaction(geom2, geom1)
     for c in contacts:
-      c.setBounce(0.9)
+      c.setBounce(0.2)
       c.setMu(5000)
       j = ode.ContactJoint(self.world, self.contact_group, c)
       j.attach(geom1.getBody(), geom2.getBody())
@@ -64,12 +82,19 @@ class podflaps:
     self.world.step(1/60.)
     self.contact_group.empty()
     for d in self.detonations:
-      self._renderer.add_object(scene.explosion(self, d))
+      geom = d[0]
+      pos = d[1]
+      self._renderer.add_pre_object(scene.portal(self, (pos[0], pos[1], 0), 2))
+      self.space.remove(geom)
+      self._renderer.remove_object_by_geom(geom)
     self.detonations = []
   def run(self):
     #self._renderer.add_object(scene.sphere(self, [0,0,0], 10000))
     self._renderer.add_object(scene.floor(self, 25, 15))
     self._renderer.add_drop(hud.backdrop("worldphoto.jpg"))
+
+    self.character = scene.avatar(self, (0, 0, 5), 1)
+    self._renderer.add_object(self.character)
     while self.running:
       self.handle_events(pygame.event.get())
       self.handle_keys(pygame.key.get_pressed())
