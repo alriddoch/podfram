@@ -55,7 +55,7 @@ class renderer:
     "Set up the camera"
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
-    glTranslated(0, 0, -100)
+    glTranslated(0, 0, -400)
     glRotate(-30, 1, 0, 0)
     glTranslated(-self.camera_focus[0],
                  -self.camera_focus[1],
