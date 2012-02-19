@@ -277,10 +277,26 @@ class heightfield:
         normals[index, 1] = (h4 - h2) / 2.0
         normals[index, 2] = 1.0
         steepness = abs(h1 - h3) + abs(h3 - h2)
-        if steepness < 0.5:
-          colors[index, 0] = 0.0
-          colors[index, 1] = 1.0
-          colors[index, 2] = 0.0
+        z = vertices[index, 2]
+        if z < -1.0:
+          grey = 0.6 * (32.0 + z) / 32.0
+          colors[index, 0] = grey
+          colors[index, 1] = grey
+          colors[index, 2] = grey
+        elif steepness < 4.0:
+          if z < 1.0:
+            colors[index, 0] = 1.0
+            colors[index, 1] = 1.0
+            colors[index, 2] = 0.0
+          else:
+            colors[index, 0] = 0.0
+            colors[index, 1] = 1.0
+            colors[index, 2] = 0.0
+        else:
+          colors[index, 0] = 0.4
+          colors[index, 1] = 0.4
+          colors[index, 2] = 0.4
+          
     print len(vertices), len(vertices.tostring())
     self.vertices = vertices.tostring()
     self.colors = colors.tostring()
@@ -313,18 +329,22 @@ class heightfield:
     print index_count, idx
     self.indices = indices.tostring()
     self.index_count = idx
-  def draw(self):
-    glColor3f(0.4,.4,.4)
     glEnableClientState(GL_VERTEX_ARRAY)
     glEnableClientState(GL_NORMAL_ARRAY)
     glEnableClientState(GL_COLOR_ARRAY)
+
+    self.display_list = glGenLists(1)
+    glNewList(self.display_list, GL_COMPILE)
     glVertexPointer(3, GL_FLOAT, 0, self.vertices)
     glColorPointer(3, GL_FLOAT, 0, self.colors)
     glNormalPointer(GL_FLOAT, 0, self.normals)
     glDrawElements(GL_TRIANGLE_STRIP, self.index_count,
                    GL_UNSIGNED_INT, self.indices)
-    #glDrawArrays(GL_TRIANGLES, 0, self.vertex_count)
+    glEndList()
+
     glDisableClientState(GL_VERTEX_ARRAY)
     glDisableClientState(GL_NORMAL_ARRAY)
+  def draw(self):
+    glCallList(self.display_list)
   def obsolete(self):
     return False
