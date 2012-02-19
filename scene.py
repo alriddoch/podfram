@@ -328,21 +328,36 @@ class heightfield:
     print index_count, idx
     self.indices = indices.tostring()
     self.index_count = idx
-    glEnableClientState(GL_VERTEX_ARRAY)
-    glEnableClientState(GL_NORMAL_ARRAY)
-    glEnableClientState(GL_COLOR_ARRAY)
 
     self.display_list = glGenLists(1)
     glNewList(self.display_list, GL_COMPILE)
+
+    glEnableClientState(GL_VERTEX_ARRAY)
+    glEnableClientState(GL_NORMAL_ARRAY)
+    glEnableClientState(GL_COLOR_ARRAY)
     glVertexPointer(3, GL_FLOAT, 0, self.vertices)
     glColorPointer(3, GL_FLOAT, 0, self.colors)
     glNormalPointer(GL_FLOAT, 0, self.normals)
     glDrawElements(GL_TRIANGLE_STRIP, self.index_count,
                    GL_UNSIGNED_INT, self.indices)
-    glEndList()
-
     glDisableClientState(GL_VERTEX_ARRAY)
     glDisableClientState(GL_NORMAL_ARRAY)
+
+    glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA)
+    glEnable(GL_BLEND)
+
+    glBegin(GL_QUADS)
+    # top
+    glColor4f(0, 0.4, 0.9, 0.4)
+    glNormal3d(0,0,1)
+    glVertex3f(-width/2,-height/2,0.0)
+    glVertex3f(-width/2,height/2,0.0)
+    glVertex3f(width/2,height/2,0.0)
+    glVertex3f(width/2,-height/2,0.0)
+    glEnd()
+
+    glDisable(GL_BLEND)
+    glEndList()
   def draw(self):
     glCallList(self.display_list)
   def obsolete(self):
