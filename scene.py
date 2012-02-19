@@ -348,7 +348,7 @@ class heightfield:
 
     glBegin(GL_QUADS)
     # top
-    glColor4f(0, 0.4, 0.9, 0.4)
+    glColor4f(0.6, 0.8, 1.0, 0.6)
     glNormal3d(0,0,1)
     glVertex3f(-width/2,-height/2,0.0)
     glVertex3f(-width/2,height/2,0.0)
