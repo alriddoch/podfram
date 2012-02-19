@@ -256,12 +256,16 @@ class heightfield:
     height = image.size[1]
     vertex_count = width * height
     vertices = Numeric.zeros((vertex_count, 3), Numeric.Float32)
+    sea_vertices = Numeric.zeros((vertex_count, 3), Numeric.Float32)
     for y in range(0, height):
       for x in range(0, width):
         index = x + y * width
         vertices[index, 0] = x - (width / 2)
         vertices[index, 1] = y - (height / 2)
         vertices[index, 2] = (float(ord(raw[(index) * 4]))  - 128.0) / 4.0
+        sea_vertices[index, 0] = x - (width / 2)
+        sea_vertices[index, 1] = y - (height / 2)
+        sea_vertices[index, 2] = 0.0
     normals = Numeric.zeros((vertex_count, 3), Numeric.Float32)
     colors = Numeric.zeros((vertex_count, 3), Numeric.Float32)
     for y in range(1, height - 1):
@@ -297,10 +301,10 @@ class heightfield:
           colors[index, 2] = 0.4
           
     print len(vertices), len(vertices.tostring())
-    self.vertices = vertices.tostring()
-    self.colors = colors.tostring()
-    self.normals = normals.tostring()
-    self.vertex_count = vertex_count
+    #self.vertices = vertices.tostring()
+    #self.colors = colors.tostring()
+    #self.normals = normals.tostring()
+    #self.vertex_count = vertex_count
 
     index_count = width * height * 2
     indices = Numeric.zeros((index_count), Numeric.Int32)
@@ -335,28 +339,29 @@ class heightfield:
     glEnableClientState(GL_VERTEX_ARRAY)
     glEnableClientState(GL_NORMAL_ARRAY)
     glEnableClientState(GL_COLOR_ARRAY)
-    glVertexPointer(3, GL_FLOAT, 0, self.vertices)
-    glColorPointer(3, GL_FLOAT, 0, self.colors)
-    glNormalPointer(GL_FLOAT, 0, self.normals)
+
+    # Draw the land
+    glVertexPointer(3, GL_FLOAT, 0, vertices.tostring())
+    glColorPointer(3, GL_FLOAT, 0, colors.tostring())
+    glNormalPointer(GL_FLOAT, 0, normals.tostring())
     glDrawElements(GL_TRIANGLE_STRIP, self.index_count,
                    GL_UNSIGNED_INT, self.indices)
-    glDisableClientState(GL_VERTEX_ARRAY)
-    glDisableClientState(GL_NORMAL_ARRAY)
 
+    glDisableClientState(GL_NORMAL_ARRAY)
+    glDisableClientState(GL_COLOR_ARRAY)
+
+    # Draw the sea
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA)
     glEnable(GL_BLEND)
-
-    glBegin(GL_QUADS)
-    # top
     glColor4f(0, 0.4, 0.9, 0.4)
     glNormal3d(0,0,1)
-    glVertex3f(-width/2,-height/2,0.0)
-    glVertex3f(-width/2,height/2,0.0)
-    glVertex3f(width/2,height/2,0.0)
-    glVertex3f(width/2,-height/2,0.0)
-    glEnd()
-
+    glVertexPointer(3, GL_FLOAT, 0, sea_vertices.tostring())
+    glDrawElements(GL_TRIANGLE_STRIP, self.index_count,
+                   GL_UNSIGNED_INT, self.indices)
     glDisable(GL_BLEND)
+
+    glDisableClientState(GL_VERTEX_ARRAY)
+
     glEndList()
   def draw(self):
     glCallList(self.display_list)
