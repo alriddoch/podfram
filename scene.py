@@ -177,7 +177,6 @@ class voxels:
     self.display_list = glGenLists(1)
     glNewList(self.display_list, GL_COMPILE)
     glBegin(GL_QUADS)
-    glNormal3d(0,0,1)
     # top
     glNormal3d(0,0,1)
     glVertex3f(-0.5,-0.5,0.5)
