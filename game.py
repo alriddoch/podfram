@@ -43,7 +43,7 @@ class podflaps:
                 if event.key == K_RIGHT:
                   self.character.body.setForce((10000,0,0))
                 if event.key == K_SPACE:
-                  self.character.body.setForce((0,0,50000))
+                  self.character.body.setForce((0,0,10000))
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
                     print pygame.mouse.get_pos()
