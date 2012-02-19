@@ -4,6 +4,8 @@
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
+import Image
+import Numeric
 import ode
 import random
 
@@ -243,5 +245,86 @@ class voxels:
           glTranslated(x, y, z)
           glCallList(self.display_list)
           glPopMatrix()
+  def obsolete(self):
+    return False
+
+class heightfield:
+  def __init__(self, filename):
+    image = Image.open(filename)
+    raw = image.tostring("raw", "RGBX", 0, -1)
+    print image.size, len(raw)
+    width = image.size[0]
+    height = image.size[1]
+    vertex_count = width * height
+    vertices = Numeric.zeros((vertex_count, 3), Numeric.Float32)
+    for y in range(0, height):
+      for x in range(0, width):
+        index = x + y * width
+        vertices[index, 0] = x - (width / 2)
+        vertices[index, 1] = y - (height / 2)
+        vertices[index, 2] = (float(ord(raw[(index) * 4]))  - 128.0) / 4.0
+    normals = Numeric.zeros((vertex_count, 3), Numeric.Float32)
+    colors = Numeric.zeros((vertex_count, 3), Numeric.Float32)
+    for y in range(1, height - 1):
+      for x in range(1, width - 1):
+        index = x + y * width
+        h1 = vertices[(x - 1) + y * width, 2]
+        h2 = vertices[x +       ((y + 1) * width), 2]
+        h3 = vertices[x + 1 +   y * width, 2]
+        h4 = vertices[x +       (y - 1) * width, 2]
+        
+        normals[index, 0] = (h1 - h3) / 2.0
+        normals[index, 1] = (h4 - h2) / 2.0
+        normals[index, 2] = 1.0
+        steepness = abs(h1 - h3) + abs(h3 - h2)
+        if steepness < 0.5:
+          colors[index, 0] = 0.0
+          colors[index, 1] = 1.0
+          colors[index, 2] = 0.0
+    print len(vertices), len(vertices.tostring())
+    self.vertices = vertices.tostring()
+    self.colors = colors.tostring()
+    self.normals = normals.tostring()
+    self.vertex_count = vertex_count
+
+    index_count = width * height * 2
+    indices = Numeric.zeros((index_count), Numeric.Int32)
+    idx = 0
+    x = 0
+    while x < (width - 1):
+      # std::cout << "G: " << i << ":" << (i&2) << std::endl << std::flush;
+      if x & 1:
+        y = height - 1
+        while y >= 0:
+          indices[idx] = y * width + x + 1
+          idx += 1
+          indices[idx] = y * width + x
+          idx += 1
+          y -= 1
+      else:
+        y = 0
+        while y < height:
+          indices[idx] = y * width + x
+          idx += 1
+          indices[idx] = y * width + x + 1
+          idx += 1
+          y += 1
+      x += 1
+    print index_count, idx
+    self.indices = indices.tostring()
+    self.index_count = idx
+  def draw(self):
+    glColor3f(0.4,.4,.4)
+    glEnableClientState(GL_VERTEX_ARRAY)
+    glEnableClientState(GL_NORMAL_ARRAY)
+    glEnableClientState(GL_COLOR_ARRAY)
+    glVertexPointer(3, GL_FLOAT, 0, self.vertices)
+    glColorPointer(3, GL_FLOAT, 0, self.colors)
+    glNormalPointer(GL_FLOAT, 0, self.normals)
+    glDrawElements(GL_TRIANGLE_STRIP, self.index_count,
+                   GL_UNSIGNED_INT, self.indices)
+    #glDrawArrays(GL_TRIANGLES, 0, self.vertex_count)
+    glDisableClientState(GL_VERTEX_ARRAY)
+    glDisableClientState(GL_NORMAL_ARRAY)
   def obsolete(self):
     return False

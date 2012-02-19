@@ -8,8 +8,8 @@ class renderer:
   def __init__(self, game):
     self.clear_color = (.1,.0,.1,.1)
     self.size = (640, 360)
-    self.perspective = (50, float(self.size[0])/self.size[1], 1,100)
-    self.camera_focus = (0, -0, 0)
+    self.perspective = (50, float(self.size[0])/self.size[1], 1,1000)
+    self.camera_focus = (0, 0, 0)
 
     self.clock = pygame.time.Clock()
     self.drops = []
@@ -55,8 +55,8 @@ class renderer:
     "Set up the camera"
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
-    glTranslated(0, 0, -4)
-    glRotate(-90, 1, 0, 0)
+    glTranslated(0, 0, -100)
+    glRotate(-30, 1, 0, 0)
     glTranslated(-self.camera_focus[0],
                  -self.camera_focus[1],
                  -self.camera_focus[2])

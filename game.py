@@ -106,8 +106,9 @@ class podflaps:
   def run(self):
     #self._renderer.add_object(scene.sphere(self, [0,0,0], 10000))
     #self._renderer.add_object(scene.floor(self, 25, 15))
-    self._renderer.add_object(scene.voxels(self))
-    self._renderer.add_drop(hud.sky())
+    #self._renderer.add_object(scene.voxels(self))
+    #self._renderer.add_drop(hud.sky())
+    self._renderer.add_object(scene.heightfield("diplomacy_heightfield.jpg"))
 
     self.character = scene.avatar(self, (0, 0, 5), 0.3)
     self._renderer.add_object(self.character)
@@ -116,6 +117,6 @@ class podflaps:
       self.handle_keys(pygame.key.get_pressed())
       self.handle_world()
       self.clock.tick()
-      self._renderer.set_camera_focus(self.character.body.getPosition())
+      #self._renderer.set_camera_focus(self.character.body.getPosition())
       self._renderer.update()
     print self.clock.get_fps()
