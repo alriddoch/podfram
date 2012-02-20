@@ -52,6 +52,11 @@ class podflaps:
                     self._renderer.add_object(
                         scene.sphere(self, pos, 2))
                     # pygame.mouse.set_visible(False)
+                elif event.button == 4:
+                    self._renderer.scale /= 1.2
+                elif event.button == 5:
+                    self._renderer.scale *= 1.2
+                  
             if event.type == MOUSEBUTTONUP:
                 if event.button == 1:
                     self.last_mouse_pos = None
