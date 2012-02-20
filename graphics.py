@@ -18,7 +18,7 @@ class renderer:
     self.huds = []
 
     pygame.display.set_mode(self.size, OPENGL|DOUBLEBUF|HWSURFACE)
-    glViewport(0,0,self.size[0], self.size[1])
+    glViewport(0, 0, *self.size)
     glClearColor(*self.clear_color)
     glShadeModel(GL_SMOOTH)
     glEnable(GL_COLOR_MATERIAL)
