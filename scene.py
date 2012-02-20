@@ -354,8 +354,6 @@ class heightfield:
     glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA)
     glEnable(GL_BLEND)
 
-    glBegin(GL_QUADS)
-    # top
     glColor4f(0.6, 0.8, 1.0, 0.6)
     glNormal3d(0,0,1)
     glVertexPointer(3, GL_FLOAT, 0, sea_vertices.tostring())
